@@ -10,31 +10,51 @@
 ## This script will create a tidy dataset by merging the 
 ## training and test sets into one data set, 
 ## extracting the mean and standard deviation for each measurement, 
-## apply descriptive activity names to each variable, 
+## apply descriptive names to each variable and activity, 
 ## and finally create a second, independent tidy data set with 
 ## the average of each variable for each activity and each subject.
 
 ## The author of this script used the following resources to complete this assignment:
 ## Coursera discussion forums
 ## https://thoughtfulbloke.wordpress.com/2015/09/09/getting-and-cleaning-the-assignment/
+## https://datasciencespecialization.github.io/getclean/
 
 ## To Run
+# Download the script "run_analysis.R" to the directory called "R-GCD-Project" in R working directory
 # setwd("R-GCD-Project")
 # source("run_analysis.R")
 
 # Load Libraries
 
-library(plyr)
-library(reshape)
+library(plyr)  # used for joining data
+library(reshape)  # used for melting data into narrow format
 
-
-
-
-# First read in data
 
 
 # Store the initial working directory
 initial.wd <- getwd()
+
+
+
+# Download data if data directory does not already exist
+if(!file.exists("UCI_HAR_Dataset")) {
+     
+     # URL of Human Activity Recognition Using Smartphone Data Set
+     fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+     
+     # download above file URL to destination file specified here
+     download.file(fileUrl,destfile="Dataset.zip",method="curl")
+     
+     # Unzip above dataset
+     unzip(zipfile="Dataset.zip",exdir="./")
+     
+     # Rename data directory
+     file.rename("./UCI HAR Dataset", "./UCI_HAR_Dataset")
+}
+
+
+
+# Read data
 
 # Switch to the directory containing the test data
 setwd("UCI_HAR_Dataset/test")
@@ -82,8 +102,8 @@ colnames(activity.labels) <- c("activity.labels", "activity.name")
 features <- read.table(file="features.txt", header=FALSE, sep="")
 
 
-# Return to the initial working directory
-setwd(initial.wd)
+# Return to the root project directory
+setwd(initial.wd) 
 
 
 
@@ -299,11 +319,32 @@ write.table(tidy.data, file = "tidy.data.csv" , append = FALSE, quote = TRUE, se
 
 
 
-
 # Provide instructions for marker for reading tidy dataset back into R
 
-# data <- read.table(file="tidy.data.csv", header = TRUE, quote = TRUE, sep=",")
+# data <- read.table(file="tidy.data.csv", header = TRUE, sep=",")
 # View(data)
+
+
+
+
+## Recipe for creating codebook:
+
+# Read in tidy data for generating codebook 
+# tidydata <- read.table(file="tidy.data.csv", header = TRUE,sep=",")
+# Create an R Documentation (.Rd) file summarizing variables in dataset
+# promptData(tidydata)
+
+# Convert R documentation (.Rd) file to html
+# Enter this command at command line in terminal:
+# R CMD Rdconv --type='html'  tidydata.Rd
+
+# Save output as tidydata.html and / or copy and past output into this webpage:
+# https://domchristie.github.io/to-markdown/
+# to convert to markdown format
+# Add markdown file to getting and cleaning data repository on github
+# Edit markdown file by hand to finish the codebook.
+# Include data descriptions from original data set, plus docment all intermediate steps
+
 
 
 
